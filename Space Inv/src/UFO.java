@@ -11,6 +11,7 @@ public class UFO{
 	private int x, y;
 	private Image img; 	
 	private AffineTransform tx;
+	private int speedX = 15;
 
 	public UFO() {
 		img = getImage("/imgs/ufo.gif"); //load the image for Tree
@@ -38,7 +39,7 @@ public class UFO{
 		//these are the 2 lines of code needed draw an image on the screen
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(img, tx, null);
-		
+		x-=speedX;
 		
 		update();
 		

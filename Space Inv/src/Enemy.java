@@ -42,24 +42,24 @@ public class Enemy{
 		g2.drawImage(img, tx, null);
 		
 		x+=speedX;
-		if(x >= 840) {
-			hitWall = true;
-			y+=20;
-		}else if (x <= 0) {
-			hitWall = false;
-			y+=20;
-		}
 		
-		if(hitWall) {
-			speedX = -10;
-		}else if (!hitWall) {
-			speedX = 10;
-		}
 		
 		update();
 		
 	}
 	
+	public int getY() {
+		return y;
+	}
+	public void setY(int y) {
+		this.y = y;
+	}
+	public int getSpeedX() {
+		return speedX;
+	}
+	public void setSpeedX(int speedX) {
+		this.speedX = speedX;
+	}
 	private void update()
 	{	
 		tx.setToTranslation(x, y);

@@ -58,6 +58,9 @@ public class Player{
 	public void setX(int x) {
 		this.x = x;
 	}
+	public int getY() {
+		return y;
+	}
 
 	private void init(double a, double b) {
 		tx.setToTranslation(a, b);
