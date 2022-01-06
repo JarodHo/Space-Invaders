@@ -31,11 +31,25 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	Background background = new Background(0, 0);
 	Player p = new Player(400, 700);
 	Enemy[][] enemy = new Enemy[11][2];
+	boolean[][] trackEnemy = new boolean[11][2];
+	boolean[][] canEnemyShoot = new boolean[11][2];
 	Enemy2[][] enemy2 = new Enemy2[11][2];
+	boolean[][] trackEnemy2 = new boolean[11][2];
+	boolean[][] canEnemy2Shoot = new boolean[11][2];
 	Enemy3[] enemy3 = new Enemy3[11];
-	UFO ufo = new UFO(900,0);
+	boolean[] trackEnemy3 = new boolean[11];
+	boolean[] canEnemy3Shoot = new boolean[11];
+	UFO ufo = new UFO(1200,0);
 	Lazer lazer = new Lazer(1000,1000);
 	boolean hitWall = false;
+	boolean shot = false;
+	boolean started = false;
+	int score = 0;
+	int lives = 3;
+	Lives life1 = new Lives(800-166, 785);
+	Lives life2 = new Lives(800-83, 785);
+	Lives life3 = new Lives(800, 785);
+	boolean alive = true;
 	
 	public void paint(Graphics g) {
 		super.paintComponent(g);
@@ -43,50 +57,141 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		//painting background
 		background.paint(g);
 		//paint player
+		if(lives >= 1) {
 		p.paint(g);
+		}
 		//paint enemies
 		ufo.paint(g);
+		Font c = new Font ("Terminal", Font.BOLD, 50);
+		g.setFont(c);
+		g.setColor(Color.white);
+		g.drawString("SCORE: "+score, 50, 850);
+		g.drawString("Lives: ", 475, 850);
+		
+		if(lives == 3) {
+			life1.paint(g);
+			life2.paint(g);
+			life3.paint(g);
+		}else if (lives == 2) {
+			life1.paint(g);
+			life2.paint(g);
+		}else if (lives == 1) {
+			life1.paint(g);
+		}
+		
+		if(shot) {
 		lazer.paint(g);
-		g.drawRect(15, 220, 45, 60);
+		}else if(!shot) {
+			lazer.setX(10000);
+		}
+		
+		
+		if(lazer.getY() <= 0) {
+			shot = false;
+		}
+		if(!started) {
+		for(int i = 0; i < trackEnemy.length; i++) {
+			for(int j = 0; j < trackEnemy[0].length; j++) {
+				trackEnemy[i][j] = false;
+				canEnemyShoot[i][j] = false;
+			}
+		}
+		for(int i = 0; i < trackEnemy2.length; i++) {
+			for(int j = 0; j < trackEnemy2[0].length; j++) {
+				trackEnemy2[i][j] = false;
+				canEnemy2Shoot[i][j] = false;
+			}
+		}
+		for(int i = 0; i < trackEnemy3.length; i++) {
+			trackEnemy3[i] = false;
+			canEnemy3Shoot[i] = false;
+		}
+		for(int i = 0; i < canEnemyShoot.length; i++) {
+			canEnemyShoot[i][1] = true;
+		}
+		started = true;
+		}
 		
 		//hit detection
-		
 		for(int i = 0; i < enemy2.length; i++) {
 			for(int j = 0; j < enemy2[0].length; j++) {
-				if(lazer.getX() >= enemy2[i][j].getX()+15 && lazer.getX() <= enemy2[i][j].getX()+60) {
-					//START HERE
-					//might want to create a 2d array of booleans to keep track of enemies that were hit?
+				if(lazer.getX() >= enemy2[i][j].getX()+5 && lazer.getX() <= enemy2[i][j].getX()+60 && trackEnemy2[i][j] == false) {
+					if(lazer.getY() <= enemy2[i][j].getY()+55 && lazer.getY() >= enemy2[i][j].getY() && trackEnemy2[i][j] == false) {
+						shot = false;
+						trackEnemy2[i][j] = true;
+						score+=10;
+					}
 				}
 			}
 		}
+		for(int i = 0; i < enemy.length; i++) {
+			for(int j = 0; j < enemy[0].length; j++) {
+				if(lazer.getX() >= enemy[i][j].getX()+5 && lazer.getX() <= enemy[i][j].getX()+60 && trackEnemy[i][j] == false) {
+					if(lazer.getY() <= enemy[i][j].getY()+55 && lazer.getY() >= enemy[i][j].getY() && trackEnemy[i][j] == false) {
+						shot = false;
+						trackEnemy[i][j] = true;
+						score+=20;
+					}
+				}
+			}
+		}
+		for(int i = 0; i < enemy3.length; i++) {
+			if(lazer.getX() >= enemy3[i].getX()+5 && lazer.getX() <= enemy3[i].getX()+60 && trackEnemy3[i] == false) {
+				if(lazer.getY() <= enemy3[i].getY()+55 && lazer.getY() >= enemy3[i].getY() && trackEnemy3[i] == false) {
+					shot = false;
+					trackEnemy3[i] = true;
+					score+=30;
+				}
+			}
+		}
+		if(lazer.getX() >= ufo.getX() && lazer.getX() <= ufo.getX()+75) {
+			if(lazer.getY() >= ufo.getY() && lazer.getY() <= ufo.getY() + 45) {
+				shot = false;
+				score+=50;
+				ufo.setX(2400);
+			}
+		}
+		//enemy fire//////////////////////////////////////////////////////////////////
+		for(int i = 0; i < enemy.length; i++) {
+			if(trackEnemy[i][1]) {
+				canEnemyShoot[i][0] = true;
+			}
+		}
+		/////////////////////////////////////////////////////////////////////////
 		
 		for(int i = 0; i < enemy.length; i++) {
 			for(int j = 0; j < enemy[0].length; j++) {
+				if(trackEnemy[i][j] == false) {
 				enemy[i][j].paint(g);
-				
+				}
 			}
 		}
 		for(int i = 0; i < enemy2.length; i++) {
 			for(int j = 0; j < enemy2[0].length; j++) {
+				if(trackEnemy2[i][j] == false) {
 				enemy2[i][j].paint(g);
+				}
 			}
 		}
 		for(int i = 0; i < enemy3.length; i++) {
+			if(trackEnemy3[i] == false) {
 			enemy3[i].paint(g);
-		}
-		
-		//sync movement
-		if(enemy[10][0].getX() >= 840) {
-			hitWall = true;
-		for(int i = 0; i < enemy.length; i++) {
-			for(int j = 0; j < enemy[0].length; j++) {
-				enemy[i][j].setY(enemy[i][j].getY()+20);
-				enemy2[i][j].setY(enemy2[i][j].getY()+20);
-				enemy3[i].setY(enemy3[i].getY()+10);
 			}
 		}
 		
-		}else if (enemy[0][0].getX() <= 0) {
+		//sync movement
+		for(int n = 0; n < enemy.length; n++) {
+			for(int m = 0; m < enemy[0].length; m++) {
+				if(enemy[n][m].getX() >= 840 || enemy2[n][m].getX() >= 840 || enemy3[n].getX() >= 840) {
+					hitWall = true;
+				for(int i = 0; i < enemy.length; i++) {
+					for(int j = 0; j < enemy[0].length; j++) {
+						enemy[i][j].setY(enemy[i][j].getY()+20);
+						enemy2[i][j].setY(enemy2[i][j].getY()+20);
+						enemy3[i].setY(enemy3[i].getY()+10);
+					}
+				}
+				} else if (enemy[n][m].getX() <= 0 || enemy2[n][m].getX() <= 0 || enemy3[n].getX() <= 0) {
 			hitWall = false;
 			for(int i = 0; i < enemy.length; i++) {
 				for(int j = 0; j < enemy[0].length; j++) {
@@ -100,23 +205,25 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		if(hitWall) {
 			for(int i = 0; i < enemy.length; i++) {
 				for(int j = 0; j < enemy[0].length; j++) {
-					enemy[i][j].setSpeedX(-0);
-					enemy2[i][j].setSpeedX(-0);
-					enemy3[i].setSpeedX(-0);
+					enemy[i][j].setSpeedX(-1);
+					enemy2[i][j].setSpeedX(-1);
+					enemy3[i].setSpeedX(-1);
 				}
 			}
 		}else if (!hitWall) {
 			for(int i = 0; i < enemy.length; i++) {
 				for(int j = 0; j < enemy[0].length; j++) {
-					enemy[i][j].setSpeedX(0);
-					enemy2[i][j].setSpeedX(0);
-					enemy3[i].setSpeedX(0);
+					enemy[i][j].setSpeedX(1);
+					enemy2[i][j].setSpeedX(1);
+					enemy3[i].setSpeedX(1);
 				}
 		}
 		}
 		//ufo movement
 		if(ufo.getX() <= -2400) {
 			ufo.setX(1200);
+		}
+			}
 		}
 	}
 	
@@ -145,12 +252,12 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 		for(int i = 0; i < enemy.length; i++) {
 			for(int j = 0; j < enemy[0].length; j++) {
-				enemy[i][j] = new Enemy((i*60)-10,100+(j*60));
+				enemy[i][j] = new Enemy((i*60),220+(j*60));
 			}
 		}
 		for(int i = 0; i < enemy2.length; i++) {
 			for(int j = 0; j < enemy2[0].length; j++) {
-				enemy2[i][j] = new Enemy2((i*60),220+(j*60));
+				enemy2[i][j] = new Enemy2((i*60),100+(j*60));
 			}
 		}
 		for(int i = 0; i < enemy3.length; i++) {
@@ -202,9 +309,10 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		if(arg0.getKeyCode() == 39) {
 			p.setX(p.getX()+7);
 		}
-		if(arg0.getKeyCode() == 32) {
-			lazer.setX(p.getX()+30);
-			lazer.setY(p.getY()-40);
+		if(arg0.getKeyCode() == 32 && !shot) {
+			lazer.setX(p.getX()+33);
+			lazer.setY(p.getY()-33);
+			shot = true;
 		}
 	}
 
