@@ -11,7 +11,7 @@ public class UFO{
 	private int x, y;
 	private Image img; 	
 	private AffineTransform tx;
-	private int speedX = 10;
+	private int speedX = 7;
 
 	public int getY() {
 		return y;

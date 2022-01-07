@@ -50,6 +50,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	Lives life2 = new Lives(800-83, 785);
 	Lives life3 = new Lives(800, 785);
 	boolean alive = true;
+	EnemyLazer[] enemyLazers = new EnemyLazer[11];
+	boolean[] enemyShot = new boolean[11];
+	
 	
 	public void paint(Graphics g) {
 		super.paintComponent(g);
@@ -67,7 +70,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		g.setColor(Color.white);
 		g.drawString("SCORE: "+score, 50, 850);
 		g.drawString("Lives: ", 475, 850);
-		
+		for(int i = 0; i < enemyLazers.length; i++) {
+			enemyLazers[i].paint(g);
+		}
 		if(lives == 3) {
 			life1.paint(g);
 			life2.paint(g);
@@ -77,6 +82,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			life2.paint(g);
 		}else if (lives == 1) {
 			life1.paint(g);
+		}else if (lives == 0) {
+			alive = false;
+			shot = true;
 		}
 		
 		if(shot) {
@@ -86,7 +94,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		}
 		
 		
-		if(lazer.getY() <= 0) {
+		if(lazer.getY() <= -50) {
 			shot = false;
 		}
 		if(!started) {
@@ -108,6 +116,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		}
 		for(int i = 0; i < canEnemyShoot.length; i++) {
 			canEnemyShoot[i][1] = true;
+		}
+		for(int i = 0; i < enemyShot.length; i++) {
+			enemyShot[i] = false;
 		}
 		started = true;
 		}
@@ -151,13 +162,70 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 				ufo.setX(2400);
 			}
 		}
-		//enemy fire//////////////////////////////////////////////////////////////////
+		//enemy fire
 		for(int i = 0; i < enemy.length; i++) {
 			if(trackEnemy[i][1]) {
 				canEnemyShoot[i][0] = true;
+			if(trackEnemy[i][0]) {
+				canEnemy2Shoot[i][1] = true;
+			}
+			if(trackEnemy2[i][1]) {
+				canEnemy2Shoot[i][0] = true;
+			}
+			if(trackEnemy2[i][0]) {
+				canEnemy3Shoot[i] = true;
 			}
 		}
-		/////////////////////////////////////////////////////////////////////////
+	}
+		for(int i = 0; i < enemy.length; i++) {
+			for(int j = 0; j < enemy[0].length; j++) {
+				if(canEnemyShoot[i][j] && !enemyShot[i] && !trackEnemy[i][j]) {
+					int random = (int)(Math.random()*351);
+					if(random == 50) {
+						enemyLazers[i].setX(enemy[i][j].getX()+30);
+						enemyLazers[i].setY(enemy[i][j].getY()+30);
+						enemyShot[i] = true;
+					}
+					
+				}
+			}
+		}
+		for(int i = 0; i < enemy2.length; i++) {
+			for(int j = 0; j < enemy2[0].length; j++) {
+				if(canEnemy2Shoot[i][j] && !enemyShot[i] && !trackEnemy2[i][j]) {
+					int random = (int)(Math.random()*301);
+					if(random == 50) {
+						enemyLazers[i].setX(enemy2[i][j].getX()+30);
+						enemyLazers[i].setY(enemy2[i][j].getY()+30);
+						enemyShot[i] = true;
+					}
+					
+				}
+			}
+		}
+		for(int i = 0; i < enemy3.length; i++) {
+			if(canEnemy3Shoot[i] && !enemyShot[i] && !trackEnemy3[i]) {
+				int random = (int)(Math.random()*251);
+				if(random == 50) {
+					enemyLazers[i].setX(enemy3[i].getX()+30);
+					enemyLazers[i].setY(enemy3[i].getY()+30);
+					enemyShot[i] = true;
+				}
+			}
+		}
+		for(int i = 0; i < enemyLazers.length; i++) {
+			if(enemyLazers[i].getX() >= p.getX() && enemyLazers[i].getX() <= p.getX()+82) {
+				if(enemyLazers[i].getY() >= p.getY() && enemyLazers[i].getY() <= p.getY()+78) {
+					lives--;
+					enemyLazers[i].setX(10000);
+					enemyShot[i] = false;
+				}
+			}
+			if(enemyLazers[i].getY() >= 1500) {
+				enemyShot[i] = false;
+			}
+		}
+		
 		
 		for(int i = 0; i < enemy.length; i++) {
 			for(int j = 0; j < enemy[0].length; j++) {
@@ -200,6 +268,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 					enemy3[i].setY(enemy3[i].getY()+10);
 				}
 			}
+		}else if(enemy[n][m].getY() >= 640 || enemy2[n][m].getY() >= 640 || enemy3[n].getY() >= 640) {
+			lives = 0;
+			alive = false;
 		}
 		
 		if(hitWall) {
@@ -220,8 +291,8 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		}
 		}
 		//ufo movement
-		if(ufo.getX() <= -2400) {
-			ufo.setX(1200);
+		if(ufo.getX() <= -2800) {
+			ufo.setX(1400);
 		}
 			}
 		}
@@ -262,6 +333,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		}
 		for(int i = 0; i < enemy3.length; i++) {
 			enemy3[i] = new Enemy3((i*60)+1,40);
+		}
+		for(int i = 0; i < enemy3.length; i++) {
+			enemyLazers[i] = new EnemyLazer(10000, 0);
 		}
 	}
 	@Override
@@ -309,7 +383,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		if(arg0.getKeyCode() == 39) {
 			p.setX(p.getX()+7);
 		}
-		if(arg0.getKeyCode() == 32 && !shot) {
+		if(arg0.getKeyCode() == 32 && !shot && alive) {
 			lazer.setX(p.getX()+33);
 			lazer.setY(p.getY()-33);
 			shot = true;
