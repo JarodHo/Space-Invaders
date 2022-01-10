@@ -56,6 +56,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	int[] barriersHealth = new int[20];
 	Barrier[] barriers2 = new Barrier[8];
 	int[] barriers2Health = new int[8];
+	Barrier b = new Barrier(500, 500);
 	
 	public void paint(Graphics g) {
 		super.paintComponent(g);
@@ -76,6 +77,8 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		for(int i = 0; i < enemyLazers.length; i++) {
 			enemyLazers[i].paint(g);
 		}
+		
+		b.paint(g);
 		
 		if(lives == 3) {
 			life1.paint(g);
