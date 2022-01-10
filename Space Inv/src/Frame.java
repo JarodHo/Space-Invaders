@@ -52,7 +52,10 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	boolean alive = true;
 	EnemyLazer[] enemyLazers = new EnemyLazer[11];
 	boolean[] enemyShot = new boolean[11];
-	
+	Barrier[] barriers = new Barrier[20];
+	int[] barriersHealth = new int[20];
+	Barrier[] barriers2 = new Barrier[8];
+	int[] barriers2Health = new int[8];
 	
 	public void paint(Graphics g) {
 		super.paintComponent(g);
@@ -73,6 +76,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		for(int i = 0; i < enemyLazers.length; i++) {
 			enemyLazers[i].paint(g);
 		}
+		
 		if(lives == 3) {
 			life1.paint(g);
 			life2.paint(g);
@@ -85,6 +89,36 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		}else if (lives == 0) {
 			alive = false;
 			shot = true;
+		}
+		
+		for(int i = 0; i < barriers.length; i++) {
+			if(barriersHealth[i] > 0) {
+				barriers[i].paint(g);
+			}
+			if(barriersHealth[i] == 4) {
+				barriers[i].changePicture("/imgs/Green 2 Barrier.png");
+			}else if (barriersHealth[i] == 3) {
+				barriers[i].changePicture("/imgs/Yellow Barrier.png");
+			}else if (barriersHealth[i] == 2) {
+				barriers[i].changePicture("/imgs/Yellow 2 Barrier.png");
+			}else if (barriersHealth[i] == 1) {
+				barriers[i].changePicture("/imgs/Red Barrier.png");
+			}
+		}
+		
+		for(int i = 0; i < barriers2.length; i++) {
+			if(barriers2Health[i] > 0) {
+				//barriers2[i].paint(g);
+			}
+			if(barriers2Health[i] == 4) {
+				barriers[i].changePicture("/imgs/Green 2 Barrier.png");
+			}else if (barriers2Health[i] == 3) {
+				barriers[i].changePicture("/imgs/Yellow Barrier.png");
+			}else if (barriers2Health[i] == 2) {
+				barriers[i].changePicture("/imgs/Yellow 2 Barrier.png");
+			}else if (barriers2Health[i] == 1) {
+				barriers[i].changePicture("/imgs/Red Barrier.png");
+			}
 		}
 		
 		if(shot) {
@@ -119,6 +153,12 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		}
 		for(int i = 0; i < enemyShot.length; i++) {
 			enemyShot[i] = false;
+		}
+		for(int i = 0; i < barriersHealth.length; i++) {
+			barriersHealth[i] = 5;
+		}
+		for(int i = 0; i < barriers2Health.length; i++) {
+			barriers2Health[i] = 5;
 		}
 		started = true;
 		}
@@ -337,6 +377,15 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		for(int i = 0; i < enemy3.length; i++) {
 			enemyLazers[i] = new EnemyLazer(10000, 0);
 		}
+		
+		int count = 0;
+		for(int i = 0; i < 4; i++) {
+			for(int j = 0; j < 5; j++) {
+					barriers[count] = new Barrier((j*25)+(i*200)+100,600);
+					count++;
+			}
+		}
+		
 	}
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
