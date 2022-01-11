@@ -56,7 +56,6 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	int[] barriersHealth = new int[20];
 	Barrier[] barriers2 = new Barrier[8];
 	int[] barriers2Health = new int[8];
-	Barrier b = new Barrier(500, 500);
 	
 	public void paint(Graphics g) {
 		super.paintComponent(g);
@@ -77,9 +76,8 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		for(int i = 0; i < enemyLazers.length; i++) {
 			enemyLazers[i].paint(g);
 		}
-		
-		b.paint(g);
-		
+
+	
 		if(lives == 3) {
 			life1.paint(g);
 			life2.paint(g);
@@ -109,9 +107,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			}
 		}
 		
-		for(int i = 0; i < barriers2.length; i++) {
+		for(int i = 0; i < 8; i++) {
 			if(barriers2Health[i] > 0) {
-				//barriers2[i].paint(g);
+				barriers2[i].paint(g);
 			}
 			if(barriers2Health[i] == 4) {
 				barriers[i].changePicture("/imgs/Green 2 Barrier.png");
@@ -167,6 +165,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		}
 		
 		//hit detection
+		//enemies
 		for(int i = 0; i < enemy2.length; i++) {
 			for(int j = 0; j < enemy2[0].length; j++) {
 				if(lazer.getX() >= enemy2[i][j].getX()+5 && lazer.getX() <= enemy2[i][j].getX()+60 && trackEnemy2[i][j] == false) {
@@ -198,6 +197,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 				}
 			}
 		}
+		//ufo
 		if(lazer.getX() >= ufo.getX() && lazer.getX() <= ufo.getX()+75) {
 			if(lazer.getY() >= ufo.getY() && lazer.getY() <= ufo.getY() + 45) {
 				shot = false;
@@ -205,6 +205,15 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 				ufo.setX(2400);
 			}
 		}
+		//barriers
+		// Barriers hitbox: 28, 28
+		
+		for(int i = 0; i < barriers.length; i++) {
+			if(enemyLazers[i].getX() >= barriers[i].getX() && enemyLazers[i].getX() <= barriers[i].getX()+28) {
+				
+			}
+		}
+		
 		//enemy fire
 		for(int i = 0; i < enemy.length; i++) {
 			if(trackEnemy[i][1]) {
@@ -384,11 +393,18 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		int count = 0;
 		for(int i = 0; i < 4; i++) {
 			for(int j = 0; j < 5; j++) {
-					barriers[count] = new Barrier((j*25)+(i*200)+100,600);
+					barriers[count] = new Barrier((j*28)+(i*200)+100,600);
 					count++;
 			}
 		}
-		
+		int count2 = 0;
+		for(int i = 0; i < 4; i++) {
+			for(int j = 0; j < 2; j++) {
+				barriers2[count2] = new Barrier(100+(j*112)+(i*200), 628);
+				count2++;
+			}
+		}
+		//(j*109)+(i+100)
 	}
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
