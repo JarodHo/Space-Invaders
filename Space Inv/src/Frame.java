@@ -208,9 +208,13 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		//barriers
 		// Barriers hitbox: 28, 28
 		
-		for(int i = 0; i < barriers.length; i++) {
-			if(enemyLazers[i].getX() >= barriers[i].getX() && enemyLazers[i].getX() <= barriers[i].getX()+28) {
-				
+		for(int i = 0; i < enemyLazers.length; i++) {
+			for(int j = 0; j < barriers.length; j++) {
+				if(enemyLazers[i].getX() >= barriers[j].getX() && enemyLazers[i].getX() <= barriers[j].getX()+28) {
+					if(enemyLazers[i].getY() >= barriers[j].getY() && enemyLazers[i].getY() <= barriers[j].getY()+28) {
+						barriersHealth[j]--;
+					}
+				}
 			}
 		}
 		
