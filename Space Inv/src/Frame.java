@@ -52,8 +52,8 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	boolean alive = true;
 	EnemyLazer[] enemyLazers = new EnemyLazer[11];
 	boolean[] enemyShot = new boolean[11];
-	Barrier[] barriers = new Barrier[20];
-	int[] barriersHealth = new int[20];
+	Barrier[] barriers = new Barrier[12];
+	int[] barriersHealth = new int[12];
 	Barrier[] barriers2 = new Barrier[8];
 	int[] barriers2Health = new int[8];
 	
@@ -112,13 +112,13 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 				barriers2[i].paint(g);
 			}
 			if(barriers2Health[i] == 4) {
-				barriers[i].changePicture("/imgs/Green 2 Barrier.png");
+				barriers2[i].changePicture("/imgs/Green 2 Barrier.png");
 			}else if (barriers2Health[i] == 3) {
-				barriers[i].changePicture("/imgs/Yellow Barrier.png");
+				barriers2[i].changePicture("/imgs/Yellow Barrier.png");
 			}else if (barriers2Health[i] == 2) {
-				barriers[i].changePicture("/imgs/Yellow 2 Barrier.png");
+				barriers2[i].changePicture("/imgs/Yellow 2 Barrier.png");
 			}else if (barriers2Health[i] == 1) {
-				barriers[i].changePicture("/imgs/Red Barrier.png");
+				barriers2[i].changePicture("/imgs/Red Barrier.png");
 			}
 		}
 		
@@ -210,10 +210,39 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 		for(int i = 0; i < enemyLazers.length; i++) {
 			for(int j = 0; j < barriers.length; j++) {
-				if(enemyLazers[i].getX() >= barriers[j].getX() && enemyLazers[i].getX() <= barriers[j].getX()+28) {
-					if(enemyLazers[i].getY() >= barriers[j].getY() && enemyLazers[i].getY() <= barriers[j].getY()+28) {
+				if(enemyLazers[i].getX() >= barriers[j].getX() && enemyLazers[i].getX() <= barriers[j].getX()+28 && barriersHealth[j] > 0) {
+					if(enemyLazers[i].getY() >= barriers[j].getY()-28 && enemyLazers[i].getY() <= barriers[j].getY()+28) {
 						barriersHealth[j]--;
+						enemyLazers[i].setX(10000);
+						enemyShot[i] = false;
 					}
+				}
+			}
+		}
+		for(int i = 0; i < barriers.length; i++) {
+			if(lazer.getX() >= barriers[i].getX() && lazer.getX() <= barriers[i].getX()+28 && barriersHealth[i] > 0) {
+				if(lazer.getY() >= barriers[i].getY() && lazer.getY() <= barriers[i].getY()+28) {
+					barriersHealth[i]--;
+					shot = false;
+				}
+			}
+		}
+		for(int i = 0; i < enemyLazers.length; i++) {
+			for(int j = 0; j < barriers2.length; j++) {
+				if(enemyLazers[i].getX() >= barriers2[j].getX() && enemyLazers[i].getX() <= barriers2[j].getX()+28 && barriers2Health[j] > 0) {
+					if(enemyLazers[i].getY() >= barriers2[j].getY()-28 && enemyLazers[i].getY() <= barriers2[j].getY()+28) {
+						barriers2Health[j]--;
+						enemyLazers[i].setX(10000);
+						enemyShot[i] = false;
+					}
+				}
+			}
+		}
+		for(int i = 0; i < barriers2.length; i++) {
+			if(lazer.getX() >= barriers2[i].getX() && lazer.getX() <= barriers2[i].getX()+28 && barriers2Health[i] > 0) {
+				if(lazer.getY() >= barriers2[i].getY() && lazer.getY() <= barriers2[i].getY()+28) {
+					barriers2Health[i]--;
+					shot = false;
 				}
 			}
 		}
@@ -236,8 +265,8 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		for(int i = 0; i < enemy.length; i++) {
 			for(int j = 0; j < enemy[0].length; j++) {
 				if(canEnemyShoot[i][j] && !enemyShot[i] && !trackEnemy[i][j]) {
-					int random = (int)(Math.random()*351);
-					if(random == 50) {
+					int random = (int)(Math.random()*191);
+					if(random == 2) {
 						enemyLazers[i].setX(enemy[i][j].getX()+30);
 						enemyLazers[i].setY(enemy[i][j].getY()+30);
 						enemyShot[i] = true;
@@ -249,8 +278,8 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		for(int i = 0; i < enemy2.length; i++) {
 			for(int j = 0; j < enemy2[0].length; j++) {
 				if(canEnemy2Shoot[i][j] && !enemyShot[i] && !trackEnemy2[i][j]) {
-					int random = (int)(Math.random()*301);
-					if(random == 50) {
+					int random = (int)(Math.random()*151);
+					if(random == 2) {
 						enemyLazers[i].setX(enemy2[i][j].getX()+30);
 						enemyLazers[i].setY(enemy2[i][j].getY()+30);
 						enemyShot[i] = true;
@@ -261,8 +290,8 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		}
 		for(int i = 0; i < enemy3.length; i++) {
 			if(canEnemy3Shoot[i] && !enemyShot[i] && !trackEnemy3[i]) {
-				int random = (int)(Math.random()*251);
-				if(random == 50) {
+				int random = (int)(Math.random()*121);
+				if(random == 2) {
 					enemyLazers[i].setX(enemy3[i].getX()+30);
 					enemyLazers[i].setY(enemy3[i].getY()+30);
 					enemyShot[i] = true;
@@ -277,7 +306,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 					enemyShot[i] = false;
 				}
 			}
-			if(enemyLazers[i].getY() >= 1500) {
+			if(enemyLazers[i].getY() >= 1150) {
 				enemyShot[i] = false;
 			}
 		}
@@ -396,8 +425,8 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 		int count = 0;
 		for(int i = 0; i < 4; i++) {
-			for(int j = 0; j < 5; j++) {
-					barriers[count] = new Barrier((j*28)+(i*200)+100,600);
+			for(int j = 0; j < 3; j++) {
+					barriers[count] = new Barrier((j*28)+(i*200)+128,600);
 					count++;
 			}
 		}
@@ -450,10 +479,10 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		System.out.println(arg0.getKeyCode());
 		
 		if(arg0.getKeyCode() == 37) {
-			p.setX(p.getX()-7);
+			p.setSpeedX(-7);
 		}
 		if(arg0.getKeyCode() == 39) {
-			p.setX(p.getX()+7);
+			p.setSpeedX(7);
 		}
 		if(arg0.getKeyCode() == 32 && !shot && alive) {
 			lazer.setX(p.getX()+33);
@@ -465,7 +494,12 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+		if(arg0.getKeyCode() == 37) {
+			p.setSpeedX(0);
+		}
+		if(arg0.getKeyCode() == 39) {
+			p.setSpeedX(0);
+		}
 	}
 
 	@Override

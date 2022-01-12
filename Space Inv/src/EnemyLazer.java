@@ -11,7 +11,7 @@ public class EnemyLazer{
 	private int x, y;
 	private Image img; 	
 	private AffineTransform tx;
-	private int speedY = 10;
+	private int speedY = 15;
 
 	public EnemyLazer(int x, int y) {
 		img = getImage("/imgs/EnemyLazer.png"); //load the image for Tree

@@ -41,6 +41,7 @@ public class Barrier{
 
 	public void changePicture(String newFileName) {
 		img = getImage(newFileName);
+		tx.scale(.05, .05);
 		init(x, y);
 	}
 	
@@ -60,7 +61,7 @@ public class Barrier{
 	
 	private void init(double a, double b) {
 		tx.setToTranslation(a, b);
-		tx.scale(.5, .5);
+		tx.scale(.05, .05);
 	}
 
 	private Image getImage(String path) {

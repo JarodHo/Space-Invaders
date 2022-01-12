@@ -11,6 +11,7 @@ public class Player{
 	private int x, y;
 	private Image img; 	
 	private AffineTransform tx;
+	private int speedX = 0;
 
 	public Player() {
 		img = getImage("/imgs/player.png"); //load the image for Tree
@@ -38,12 +39,18 @@ public class Player{
 		//these are the 2 lines of code needed draw an image on the screen
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(img, tx, null);
-		
+		x += speedX;
 		
 		update();
 		
 	}
 	
+	public int getSpeedX() {
+		return speedX;
+	}
+	public void setSpeedX(int speedX) {
+		this.speedX = speedX;
+	}
 	private void update()
 	{	
 		tx.setToTranslation(x, y);
