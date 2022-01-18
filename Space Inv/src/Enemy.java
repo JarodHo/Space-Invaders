@@ -66,6 +66,10 @@ public class Enemy{
 		tx.scale(.15, .15);
 	}
 	
+	public void setSize(double x) {
+		tx.scale(x, x);
+	}
+	
 	
 	
 	public int getX() {

@@ -57,6 +57,13 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	Barrier[] barriers2 = new Barrier[8];
 	int[] barriers2Health = new int[8];
 	
+	Background loseScreen = new Background(0, 0);
+	Enemy loseEnemy1 = new Enemy(400, 450);
+	Enemy2 loseEnemy2 = new Enemy2(200, 450);
+	Enemy3 loseEnemy3 = new Enemy3(600, 450);
+	Button yes = new Button(250, 725);
+	Button no = new Button(650, 725);
+	
 	public void paint(Graphics g) {
 		super.paintComponent(g);
 		//have objects paint themselves
@@ -76,6 +83,8 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		for(int i = 0; i < enemyLazers.length; i++) {
 			enemyLazers[i].paint(g);
 		}
+		
+		
 
 	
 		if(lives == 3) {
@@ -96,7 +105,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			if(barriersHealth[i] > 0) {
 				barriers[i].paint(g);
 			}
-			if(barriersHealth[i] == 4) {
+			if(barriersHealth[i] == 5) {
+				barriers[i].changePicture("/imgs/Green Barrier.png");
+			}else if(barriersHealth[i] == 4) {
 				barriers[i].changePicture("/imgs/Green 2 Barrier.png");
 			}else if (barriersHealth[i] == 3) {
 				barriers[i].changePicture("/imgs/Yellow Barrier.png");
@@ -111,7 +122,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			if(barriers2Health[i] > 0) {
 				barriers2[i].paint(g);
 			}
-			if(barriers2Health[i] == 4) {
+			if(barriers2Health[i] == 5) {
+				barriers2[i].changePicture("/imgs/Green Barrier.png");
+			}else if(barriers2Health[i] == 4) {
 				barriers2[i].changePicture("/imgs/Green 2 Barrier.png");
 			}else if (barriers2Health[i] == 3) {
 				barriers2[i].changePicture("/imgs/Yellow Barrier.png");
@@ -120,6 +133,37 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			}else if (barriers2Health[i] == 1) {
 				barriers2[i].changePicture("/imgs/Red Barrier.png");
 			}
+		}
+		
+		if(!alive) {
+			loseScreen.paint(g);
+			loseEnemy1.paint(g);
+			loseEnemy1.setSize(2.0);
+			loseEnemy1.setSpeedX(0);
+			loseEnemy2.paint(g);
+			loseEnemy2.setSize(2.0);
+			loseEnemy2.setSpeedX(0);
+			loseEnemy3.paint(g);
+			loseEnemy3.setSize(2.0);
+			loseEnemy3.setSpeedX(0);
+			yes.paint(g);
+			no.changePicture("/imgs/no.png");
+			no.paint(g);
+			g.drawRect(650, 725, 112, 126);
+			
+			for(int i = 0; i < trackEnemy.length; i++) {
+				for(int j = 0; j < trackEnemy[0].length; j++) {
+					trackEnemy[i][j] = true;
+					trackEnemy2[i][j] = true;
+					trackEnemy3[i] = true;
+				}
+			}
+			
+			Font c2 = new Font ("Terminal", Font.BOLD, 100);
+			g.setFont(c2);
+			g.drawString("You Lost", 250, 250);
+			g.drawString("Your Score: " + score, 75, 450);
+			g.drawString("Play again?", 200, 675);
 		}
 		
 		if(shot) {
@@ -132,7 +176,12 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		if(lazer.getY() <= -50) {
 			shot = false;
 		}
+		
 		if(!started) {
+			score = 0;
+		alive = true;
+		lives = 3;
+		shot = false;
 		for(int i = 0; i < trackEnemy.length; i++) {
 			for(int j = 0; j < trackEnemy[0].length; j++) {
 				trackEnemy[i][j] = false;
@@ -161,6 +210,28 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		for(int i = 0; i < barriers2Health.length; i++) {
 			barriers2Health[i] = 5;
 		}
+		
+		for(int i = 0; i < enemy.length; i++) {
+			for(int j = 0; j < enemy[0].length; j++) {
+				enemy[i][j].setX(i*60);
+				enemy[i][j].setY(220+(j*60));
+				
+			}
+		}
+		for(int i = 0; i < enemy2.length; i++) {
+			for(int j = 0; j < enemy2[0].length; j++) {
+				enemy2[i][j].setX(i *60);
+				enemy2[i][j].setY(100+(j*60));
+			}
+		}
+		for(int i = 0; i < enemy3.length; i++) {
+			enemy3[i].setX((i*60)+1);
+			enemy3[i].setY(40);
+		}
+		for(int i = 0; i < enemy3.length; i++) {
+			enemyLazers[i].setX(10000);
+		}
+		
 		started = true;
 		}
 		
@@ -332,10 +403,10 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			}
 		}
 		
-		//sync movement
+		//sync movement and 2nd lose condition
 		for(int n = 0; n < enemy.length; n++) {
 			for(int m = 0; m < enemy[0].length; m++) {
-				if(enemy[n][m].getX() >= 840 || enemy2[n][m].getX() >= 840 || enemy3[n].getX() >= 840) {
+				if(enemy[n][m].getX() >= 840 || enemy2[n][m].getX() >= 840 || enemy3[n].getX() >= 840 && started) {
 					hitWall = true;
 				for(int i = 0; i < enemy.length; i++) {
 					for(int j = 0; j < enemy[0].length; j++) {
@@ -344,7 +415,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 						enemy3[i].setY(enemy3[i].getY()+10);
 					}
 				}
-				} else if (enemy[n][m].getX() <= 0 || enemy2[n][m].getX() <= 0 || enemy3[n].getX() <= 0) {
+				} else if (enemy[n][m].getX() <= 0 || enemy2[n][m].getX() <= 0 || enemy3[n].getX() <= 0 && started) {
 			hitWall = false;
 			for(int i = 0; i < enemy.length; i++) {
 				for(int j = 0; j < enemy[0].length; j++) {
@@ -459,7 +530,12 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+		//g.drawRect(250, 725, 112, 126);
+	if(arg0.getX() > 250 && arg0.getX() < 250+112 && !alive) {
+		if(arg0.getY() > 725 && arg0.getY() < 725+126 && !alive) {
+			started = false;
+		}
+	}
 	}
 	@Override
 	public void mouseReleased(MouseEvent arg0) {

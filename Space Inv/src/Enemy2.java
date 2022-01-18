@@ -47,7 +47,9 @@ public class Enemy2{
 		update();
 		
 	}
-	
+	public void setSize(double x) {
+		tx.scale(x, x);
+	}
 	public int getY() {
 		return y;
 	}
