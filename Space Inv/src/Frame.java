@@ -57,12 +57,15 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	Barrier[] barriers2 = new Barrier[8];
 	int[] barriers2Health = new int[8];
 	
-	Background loseScreen = new Background(0, 0);
+	Background endScreen = new Background(0, 0);
 	Enemy loseEnemy1 = new Enemy(400, 450);
 	Enemy2 loseEnemy2 = new Enemy2(200, 450);
 	Enemy3 loseEnemy3 = new Enemy3(600, 450);
-	Button yes = new Button(250, 725);
-	Button no = new Button(650, 725);
+	Button tryAgainButton = new Button(400, 575);
+	Button playAgainButton = new Button(275, 575);
+	boolean win = false;
+	int killCount = 0;
+
 	
 	public void paint(Graphics g) {
 		super.paintComponent(g);
@@ -86,7 +89,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 		
 
-	
+	//paints correct number of lives in the bottom right
 		if(lives == 3) {
 			life1.paint(g);
 			life2.paint(g);
@@ -100,7 +103,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			alive = false;
 			shot = true;
 		}
-		
+		//paints correct color barriers (and barriers themselves)
 		for(int i = 0; i < barriers.length; i++) {
 			if(barriersHealth[i] > 0) {
 				barriers[i].paint(g);
@@ -135,8 +138,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			}
 		}
 		
-		if(!alive) {
-			loseScreen.paint(g);
+		//checks if lost, if lost paints lose screen elements
+		if(!alive && !win && lives == 0) {
+			endScreen.paint(g);
 			loseEnemy1.paint(g);
 			loseEnemy1.setSize(2.0);
 			loseEnemy1.setSpeedX(0);
@@ -146,10 +150,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			loseEnemy3.paint(g);
 			loseEnemy3.setSize(2.0);
 			loseEnemy3.setSpeedX(0);
-			yes.paint(g);
-			no.changePicture("/imgs/no.png");
-			no.paint(g);
-			g.drawRect(650, 725, 112, 126);
+			tryAgainButton.paint(g);
+			lazer.setX(10000);
+
 			
 			for(int i = 0; i < trackEnemy.length; i++) {
 				for(int j = 0; j < trackEnemy[0].length; j++) {
@@ -163,20 +166,59 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			g.setFont(c2);
 			g.drawString("You Lost", 250, 250);
 			g.drawString("Your Score: " + score, 75, 450);
-			g.drawString("Play again?", 200, 675);
 		}
 		
+		// check for win
+		for(int i = 0; i < trackEnemy.length; i++) {
+			for(int j = 0; j < trackEnemy[0].length; j++) {
+				if(trackEnemy[i][j]) {
+					killCount++;
+				}
+				if(trackEnemy2[i][j]) {
+					killCount++;
+				}
+				if(trackEnemy3[i]) {
+					killCount++;
+				}
+			}
+		}
+		if(killCount == 55) {
+			win = true;
+		}
+		//if win, paint win screen elements
+		if(win) {
+			lives = -1;
+			for(int i = 0; i < trackEnemy.length; i++) {
+				for(int j = 0; j < trackEnemy[0].length; j++) {
+					trackEnemy[i][j] = true;
+					trackEnemy2[i][j] = true;
+					trackEnemy3[i] = true;
+				}
+			}
+			alive = false;
+			lazer.setX(10000);
+			endScreen.paint(g);
+			playAgainButton.changePicture("/imgs/playagain.png");
+			playAgainButton.paint(g);
+			Font c2 = new Font ("Terminal", Font.BOLD, 100);
+			g.setFont(c2);
+			g.drawString("You Won!", 220, 250);
+			g.drawString("Your Score: " + score, 120, 450);
+			
+			
+		}
+		//paints player lazer
 		if(shot) {
 		lazer.paint(g);
 		}else if(!shot) {
 			lazer.setX(10000);
 		}
 		
-		
+		//resets lazer if off the screen
 		if(lazer.getY() <= -50) {
 			shot = false;
 		}
-		
+		//sets up game
 		if(!started) {
 			score = 0;
 		alive = true;
@@ -235,7 +277,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		started = true;
 		}
 		
-		//hit detection
+		//HIT DETECTION
 		//enemies
 		for(int i = 0; i < enemy2.length; i++) {
 			for(int j = 0; j < enemy2[0].length; j++) {
@@ -322,13 +364,13 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		for(int i = 0; i < enemy.length; i++) {
 			if(trackEnemy[i][1]) {
 				canEnemyShoot[i][0] = true;
-			if(trackEnemy[i][0]) {
+			if(trackEnemy[i][0] && trackEnemy[i][1]) {
 				canEnemy2Shoot[i][1] = true;
 			}
-			if(trackEnemy2[i][1]) {
+			if(trackEnemy2[i][1] && trackEnemy[i][0] && trackEnemy[i][1]) {
 				canEnemy2Shoot[i][0] = true;
 			}
-			if(trackEnemy2[i][0]) {
+			if(trackEnemy2[i][0] && trackEnemy2[i][1] && trackEnemy[i][0] && trackEnemy[i][1]) {
 				canEnemy3Shoot[i] = true;
 			}
 		}
@@ -369,6 +411,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 				}
 			}
 		}
+		//if enemy hits player
 		for(int i = 0; i < enemyLazers.length; i++) {
 			if(enemyLazers[i].getX() >= p.getX() && enemyLazers[i].getX() <= p.getX()+82) {
 				if(enemyLazers[i].getY() >= p.getY() && enemyLazers[i].getY() <= p.getY()+78) {
@@ -377,12 +420,13 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 					enemyShot[i] = false;
 				}
 			}
+			//resets enemy lazers
 			if(enemyLazers[i].getY() >= 1150) {
 				enemyShot[i] = false;
 			}
 		}
 		
-		
+		//tracks which enemies have been hit
 		for(int i = 0; i < enemy.length; i++) {
 			for(int j = 0; j < enemy[0].length; j++) {
 				if(trackEnemy[i][j] == false) {
@@ -415,7 +459,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 						enemy3[i].setY(enemy3[i].getY()+10);
 					}
 				}
-				} else if (enemy[n][m].getX() <= 0 || enemy2[n][m].getX() <= 0 || enemy3[n].getX() <= 0 && started) {
+				} else if (enemy[n][m].getX() <= -2 || enemy2[n][m].getX() <= -2 || enemy3[n].getX() <= -2 && started) {
 			hitWall = false;
 			for(int i = 0; i < enemy.length; i++) {
 				for(int j = 0; j < enemy[0].length; j++) {
@@ -530,12 +574,21 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		//g.drawRect(250, 725, 112, 126);
-	if(arg0.getX() > 250 && arg0.getX() < 250+112 && !alive) {
-		if(arg0.getY() > 725 && arg0.getY() < 725+126 && !alive) {
+	if(arg0.getX() > tryAgainButton.getX() && arg0.getX() < tryAgainButton.getX() + 180 && !alive && !win) {
+		if(arg0.getY() > tryAgainButton.getY() && arg0.getY() < tryAgainButton.getY() + 180 && !alive && !win) {
 			started = false;
 		}
 	}
+	if(arg0.getX() > playAgainButton.getX() && arg0.getX() < playAgainButton.getX() + 344 && win && !alive) {
+		if(arg0.getY() > playAgainButton.getY() && arg0.getY() < playAgainButton.getY() + 109 && win && !alive) {
+			started = false;
+			win = false;
+
+		}
+	}
+	
+	
+	
 	}
 	@Override
 	public void mouseReleased(MouseEvent arg0) {

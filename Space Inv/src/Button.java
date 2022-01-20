@@ -13,7 +13,7 @@ public class Button{
 	private AffineTransform tx;
 
 	public Button(int x, int y) {
-		img = getImage("/imgs/yes.png"); //load the image for Tree
+		img = getImage("/imgs/tryagain.png"); //load the image for Tree
 		//put the background here^^^^
 		this.x = x;
 		this.y = y;
@@ -23,6 +23,22 @@ public class Button{
 									//use your variables
 	}
 	
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
 	public void changePicture(String newFileName) {
 		img = getImage(newFileName);
 		init(x, y);
@@ -42,9 +58,11 @@ public class Button{
 	}
 	
 	
+	
+	
 	private void init(double a, double b) {
 		tx.setToTranslation(a, b);
-		tx.scale(.5, .5);
+		tx.scale(1.0, 1.0);
 	}
 
 	private Image getImage(String path) {
