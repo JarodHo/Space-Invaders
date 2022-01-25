@@ -45,6 +45,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	boolean shot = false;
 	boolean started = false;
 	int score = 0;
+	int ufoScore = 0;
 	int lives = 3;
 	Lives life1 = new Lives(800-166, 785);
 	Lives life2 = new Lives(800-83, 785);
@@ -64,7 +65,6 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	Button tryAgainButton = new Button(400, 575);
 	Button playAgainButton = new Button(275, 575);
 	boolean win = false;
-	int killCount = 0;
 
 	
 	public void paint(Graphics g) {
@@ -81,7 +81,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		Font c = new Font ("Terminal", Font.BOLD, 50);
 		g.setFont(c);
 		g.setColor(Color.white);
-		g.drawString("SCORE: "+score, 50, 850);
+		g.drawString("SCORE: "+(score+ufoScore), 50, 850);
 		g.drawString("Lives: ", 475, 850);
 		for(int i = 0; i < enemyLazers.length; i++) {
 			enemyLazers[i].paint(g);
@@ -165,36 +165,16 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			Font c2 = new Font ("Terminal", Font.BOLD, 100);
 			g.setFont(c2);
 			g.drawString("You Lost", 250, 250);
-			g.drawString("Your Score: " + score, 75, 450);
+			g.drawString("Your Score: " + (score+ufoScore), 75, 450);
 		}
 		
 		// check for win
-		for(int i = 0; i < trackEnemy.length; i++) {
-			for(int j = 0; j < trackEnemy[0].length; j++) {
-				if(trackEnemy[i][j]) {
-					killCount++;
-				}
-				if(trackEnemy2[i][j]) {
-					killCount++;
-				}
-				if(trackEnemy3[i]) {
-					killCount++;
-				}
-			}
-		}
-		if(killCount == 55) {
+		if(score >= 990) {
 			win = true;
 		}
 		//if win, paint win screen elements
 		if(win) {
 			lives = -1;
-			for(int i = 0; i < trackEnemy.length; i++) {
-				for(int j = 0; j < trackEnemy[0].length; j++) {
-					trackEnemy[i][j] = true;
-					trackEnemy2[i][j] = true;
-					trackEnemy3[i] = true;
-				}
-			}
 			alive = false;
 			lazer.setX(10000);
 			endScreen.paint(g);
@@ -203,7 +183,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			Font c2 = new Font ("Terminal", Font.BOLD, 100);
 			g.setFont(c2);
 			g.drawString("You Won!", 220, 250);
-			g.drawString("Your Score: " + score, 120, 450);
+			g.drawString("Your Score: " + (score+ufoScore), 75, 450);
 			
 			
 		}
@@ -314,7 +294,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		if(lazer.getX() >= ufo.getX() && lazer.getX() <= ufo.getX()+75) {
 			if(lazer.getY() >= ufo.getY() && lazer.getY() <= ufo.getY() + 45) {
 				shot = false;
-				score+=50;
+				ufoScore+=50;
 				ufo.setX(2400);
 			}
 		}
@@ -577,12 +557,16 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	if(arg0.getX() > tryAgainButton.getX() && arg0.getX() < tryAgainButton.getX() + 180 && !alive && !win) {
 		if(arg0.getY() > tryAgainButton.getY() && arg0.getY() < tryAgainButton.getY() + 180 && !alive && !win) {
 			started = false;
+			score =0;
+			ufoScore = 0;
 		}
 	}
 	if(arg0.getX() > playAgainButton.getX() && arg0.getX() < playAgainButton.getX() + 344 && win && !alive) {
 		if(arg0.getY() > playAgainButton.getY() && arg0.getY() < playAgainButton.getY() + 109 && win && !alive) {
 			started = false;
 			win = false;
+			score = 0;
+			ufoScore = 0;
 
 		}
 	}
