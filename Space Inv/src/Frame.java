@@ -448,7 +448,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 					enemy3[i].setY(enemy3[i].getY()+10);
 				}
 			}
-		}else if(enemy[n][m].getY() >= 640 || enemy2[n][m].getY() >= 640 || enemy3[n].getY() >= 640) {
+		}else if(enemy[n][m].getY() >= 640 && !trackEnemy[n][m]|| enemy2[n][m].getY() >= 640 && !trackEnemy2[n][m]|| enemy3[n].getY() >= 640 && !trackEnemy3[n]) {
 			lives = 0;
 			alive = false;
 		}
