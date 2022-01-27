@@ -16,7 +16,7 @@ Move right by using the "D" or right arrow key.
 Shoot the enemies using the space key.
 
 ### Gameplay
-
+![](spaceinv.gif)
 ## Game Code / Mechanics
 
 ### Objects
