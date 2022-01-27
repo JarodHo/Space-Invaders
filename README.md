@@ -17,6 +17,14 @@ Shoot the enemies using the space key.
 
 ### Gameplay
 ![](spaceinv.gif)
-## Game Code / Mechanics
 
-### Objects
+### Game Code Explanation
+I created a class for each object listed below. Most of these classes were copies of the same class which called to different images and different scales for the image. For example, I had a different class for each enemy.
+
+##### Class List:
+Background, Barrier, Button (for restart buttons), Enemy, Enemy2, Enemy3, EnemyLazer, Lazer, Lives, Player, UFO
+
+## Game Mechanics / Code
+
+
+
