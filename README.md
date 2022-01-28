@@ -25,6 +25,17 @@ I created a class for each object listed below. Most of these classes were copie
 Background, Barrier, Button (for restart buttons), Enemy, Enemy2, Enemy3, EnemyLazer, Lazer, Lives, Player, UFO
 
 ## Game Mechanics / Code
+Here is an explanation of the most important/complicated mechanics in the game.
+### Hit Detection
+![](hitdetect.png)
+This code basically checks if the player's lazer has hit one of the enemies. If it does, it will reset the lazer, increase the score, and set a 2D boolean array to true which is in the same spot as the enemy hit - this basically keeps track of which enemies were hit and need to stop being painted.
+### Enemy Movement
+![](movement.png)
+This code checks where the left and right most aliens are, if they hit one of the edges they will all move down. If they hit a certain y-level (the barriers) the player will also lose.
+### Enemy Fire
+This code first checks which enemies can fire (those without other enemies in front of them) and generates random numbers, if a "2" is generated then that enemy will fire.
 
+### Credits:
+I created this game independently in class.
 
 
