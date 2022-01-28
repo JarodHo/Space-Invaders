@@ -37,6 +37,9 @@ This code basically checks if the player's lazer has hit one of the enemies. If 
 
 This code checks where the left and right most aliens are, if they hit one of the edges they will all move down. If they hit a certain y-level (the barriers) the player will also lose.
 ### Enemy Fire
+
+![enemyfire](https://user-images.githubusercontent.com/70664893/151582540-d0c168b8-b47b-4ca5-b065-0500568ba263.PNG)
+
 This code first checks which enemies can fire (those without other enemies in front of them) and generates random numbers, if a "2" is generated then that enemy will fire.
 
 ### Credits:
