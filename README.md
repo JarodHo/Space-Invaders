@@ -28,12 +28,12 @@ Background, Barrier, Button (for restart buttons), Enemy, Enemy2, Enemy3, EnemyL
 Here is an explanation of the most important/complicated mechanics in the game.
 ### Hit Detection
 
-![](hitdetect.png)
+![hitdetect](https://user-images.githubusercontent.com/70664893/151582702-f52216c5-bb2a-4101-ad9d-11f29d7ed04b.PNG)
 
 This code basically checks if the player's lazer has hit one of the enemies. If it does, it will reset the lazer, increase the score, and set a 2D boolean array to true which is in the same spot as the enemy hit - this basically keeps track of which enemies were hit and need to stop being painted.
 ### Enemy Movement
 
-![](movement.png)
+![movement](https://user-images.githubusercontent.com/70664893/151582672-ef4f9a2b-9578-48af-9f0a-1aa57fdececc.PNG)
 
 This code checks where the left and right most aliens are, if they hit one of the edges they will all move down. If they hit a certain y-level (the barriers) the player will also lose.
 ### Enemy Fire
